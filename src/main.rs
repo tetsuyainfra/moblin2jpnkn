@@ -1,3 +1,4 @@
+mod cli;
 mod config;
 mod xmpp;
 
@@ -11,6 +12,7 @@ use axum::extract::{ConnectInfo, State};
 use axum::routing::get;
 use axum::Router;
 use base64::Engine;
+use clap::Parser;
 use rumqttc::{AsyncClient, Event, MqttOptions, Packet, QoS};
 use serde_json::Value;
 use tokio::sync::mpsc;
@@ -37,11 +39,8 @@ enum Phase {
 async fn main() {
     tracing_subscriber::fmt().without_time().init();
 
-    let path = std::env::args()
-        .nth(1)
-        .or_else(|| std::env::var("MOBLIN2JPNKN_CONFIG").ok())
-        .unwrap_or_else(|| config::DEFAULT_CONFIG_PATH.to_string());
-    let cfg = match config::load(&path) {
+    let args = cli::Cli::parse();
+    let cfg = match config::load(&args.config) {
         Ok(c) => Arc::new(c),
         Err(e) => {
             error!("config error: {e}");

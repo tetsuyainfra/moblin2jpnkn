@@ -38,13 +38,13 @@ Moblin のチャットクライアントと JPNKN 互換 MQTT ブローカーを
 cargo build --release
 ```
 
-設定ファイルのパスを引数で指定して起動します。
+設定ファイルのパスは `--config`（短縮形 `-c`）で指定します。
 
 ```sh
-./target/release/moblin2jpnkn ./config
+./target/release/moblin2jpnkn --config ./config
 ```
 
-引数を省略した場合は、`MOBLIN2JPNKN_CONFIG` 環境変数、次に `/etc/moblin2jpnkn/config` が使用されます。
+設定パスの優先順位は、`--config`、`MOBLIN2JPNKN_CONFIG` 環境変数、`/etc/moblin2jpnkn/config` の順です。位置引数での指定には対応していません。利用できるオプションは `--help` で確認できます。
 
 ```sh
 MOBLIN2JPNKN_CONFIG=./config ./target/release/moblin2jpnkn

@@ -8,6 +8,7 @@ description = "Chat server for Moblin (XMPP over WebSocket) forwarding JPNKN MQT
 [dependencies]
 axum = { version = "0.8", features = ["ws"] }
 base64 = "0.22"
+clap = { version = "4", features = ["derive", "env"] }
 quick-xml = "0.37"
 rumqttc = { version = "0.24", features = ["url"] }
 serde = { version = "1", features = ["derive"] }
