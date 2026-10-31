@@ -1,0 +1,2 @@
+[env]
+MOBLIN2JPNKN_CONFIG="{{config_root}}/config.local"

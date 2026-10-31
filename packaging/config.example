@@ -1,0 +1,13 @@
+# /etc/moblin2jpnkn/config  (KEY=VALUE 形式。環境変数が設定ファイルより優先されます)
+
+# 待受ホスト / ポート / WebSocketパス
+HOST=0.0.0.0
+PORT=5443
+WS_PATH=/ws
+
+# MQTTブローカー（必須）
+MQTT_URL=mqtt://localhost:1883
+MQTT_USERNAME=
+MQTT_PASSWORD=
+# 購読トピック（必須。複数はカンマ区切り）
+MQTT_TOPIC=chat/messages

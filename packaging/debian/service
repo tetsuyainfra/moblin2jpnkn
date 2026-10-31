@@ -1,0 +1,30 @@
+[Unit]
+Description=Moblin chat server (XMPP over WebSocket, JPNKN MQTT bridge)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=moblin2jpnkn
+Group=moblin2jpnkn
+ExecStart=/usr/bin/moblin2jpnkn /etc/moblin2jpnkn/config
+Restart=on-failure
+RestartSec=5
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallArchitectures=native
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target
