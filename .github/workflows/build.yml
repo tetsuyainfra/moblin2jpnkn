@@ -11,13 +11,17 @@ permissions:
 
 jobs:
   deb:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: dtolnay/rust-toolchain@stable
-
-      - uses: Swatinem/rust-cache@v2
+      - uses: actions/checkout@v7
+        with:
 
       - name: Install cargo-deb
         run: cargo install cargo-deb --locked
@@ -25,9 +29,9 @@ jobs:
       - name: Build deb
         run: cargo deb
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
-          name: deb
+          name: deb-${{ matrix.arch }}
           path: target/debian/*.deb
 
   release:
@@ -37,17 +41,21 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
-          name: deb
+          pattern: deb-*
+          merge-multiple: true
 
       - name: Generate SHA256SUMS
         run: sha256sum *.deb > SHA256SUMS
 
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            *.deb
-            SHA256SUMS
-          generate_release_notes: true
+      # - name: Publish built binary to GitHub releases
+      # - run: |
+      #     gh release create --generate-notes ./<my-app>/<my-project>#<my-app>
+      # - name: Create GitHub release
+      #   uses: softprops/action-gh-release@v2
+      #   with:
+      #     files: |
+      #       *.deb
+      #       SHA256SUMS
+      #     generate_release_notes: true
