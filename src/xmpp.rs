@@ -1,5 +1,5 @@
 use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
+use quick_xml::{escape, Reader, XmlVersion};
 
 #[derive(Debug, Default)]
 pub struct Stanza {
@@ -18,16 +18,18 @@ impl Stanza {
     }
 }
 
-fn local(name: &[u8]) -> String {
-    let s = String::from_utf8_lossy(name);
-    s.rsplit(':').next().unwrap_or("").to_string()
+fn local(name: &str) -> String {
+    name.rsplit(':').next().unwrap_or("").to_string()
 }
 
 fn set_root(stanza: &mut Stanza, e: &BytesStart) -> Result<(), String> {
     stanza.name = local(e.name().as_ref());
     for a in e.attributes().flatten() {
-        let k = String::from_utf8_lossy(a.key.as_ref()).to_string();
-        let v = a.unescape_value().map_err(|e| e.to_string())?.to_string();
+        let k = a.key.as_ref().to_string();
+        let v = a
+            .normalized_value(XmlVersion::default())
+            .map_err(|e| e.to_string())?
+            .to_string();
         stanza.attrs.push((k, v));
     }
     Ok(())
@@ -58,7 +60,9 @@ pub fn parse(input: &str) -> Result<Stanza, String> {
             }
             Event::End(_) => depth = depth.saturating_sub(1),
             Event::Text(t) if depth == 1 => {
-                stanza.text.push_str(&t.unescape().map_err(|e| e.to_string())?);
+                stanza
+                    .text
+                    .push_str(&escape::unescape(t.as_ref()).map_err(|e| e.to_string())?);
             }
             Event::Eof => break,
             _ => {}
