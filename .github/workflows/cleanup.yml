@@ -1,0 +1,44 @@
+name: Cleanup cache and artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "削除対象"
+        type: choice
+        options:
+          - all
+          - cache
+          - artifacts
+        default: all
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  delete-caches:
+    if: inputs.target == 'all' || inputs.target == 'cache'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete all Actions caches
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh cache delete --all --succeed-on-no-caches
+
+  delete-artifacts:
+    if: inputs.target == 'all' || inputs.target == 'artifacts'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete all artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh api --paginate "repos/${GH_REPO}/actions/artifacts" --jq '.artifacts[].id' |
+            while read -r id; do
+              echo "Deleting artifact ${id}"
+              gh api -X DELETE "repos/${GH_REPO}/actions/artifacts/${id}"
+            done
