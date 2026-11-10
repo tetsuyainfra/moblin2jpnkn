@@ -29,13 +29,18 @@ jobs:
             target
           key: ${{ runner.os }}_${{ matrix.arch }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      # - id: rust_cache
-      #   uses: Swatinem/rust-cache@v2
-      # - run: echo "${{steps.rust_cache.outputs.cache-hit}}"
-
+      # cargo-deb
+      - name: Cache cargo-deb
+        id: cache-cargo-deb
+        uses: actions/cache@v6
+        with:
+          path: ~/.cargo/bin/cargo-deb
+          key: cargo-deb-v3.8.0-${{ runner.os }}-${{ runner.arch }}
       - name: Install cargo-deb
-        run: cargo install cargo-deb --locked
+        if: steps.cache-cargo-deb.outputs.cache-hit != 'true'
+        run: cargo install cargo-deb@3.8.0 --locked
 
+      # Build deb package using cargo-deb
       - name: Build deb
         run: cargo deb
 
