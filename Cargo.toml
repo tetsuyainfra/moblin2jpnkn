@@ -1,6 +1,6 @@
 [package]
 name = "moblin2jpnkn"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2021"
 description = "Chat server for Moblin (XMPP over WebSocket) forwarding JPNKN MQTT messages"
 
