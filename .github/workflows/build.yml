@@ -77,15 +77,14 @@ jobs:
             --passphrase "$GPG_PASSPHRASE" \
             --armor --detach-sign SHA256SUMS
 
+      - name: Verify SHA256SUMS signature
+        run: |
+          mkdir -m 700 "$RUNNER_TEMP/verify-gnupg"
+          gpg --homedir "$RUNNER_TEMP/verify-gnupg" --batch --import keys/signing-key.asc
+          gpg --homedir "$RUNNER_TEMP/verify-gnupg" --batch --verify SHA256SUMS.asc SHA256SUMS
+
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes *.deb SHA256SUMS SHA256SUMS.asc
 
-      # - name: Create GitHub release
-      #   uses: softprops/action-gh-release@v3
-      #   with:
-      #     files: |
-      #       *.deb
-      #       SHA256SUMS
-      #     generate_release_notes: true
