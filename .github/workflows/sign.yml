@@ -2,13 +2,14 @@ name: sign test
 
 on:
   push:
+  workflow_dispatch:
+    branches: ["**"]
 
 permissions:
   contents: read
 
 jobs:
   sign:
-    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
