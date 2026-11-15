@@ -7,7 +7,7 @@ Wants=network-online.target
 Type=simple
 User=moblin2jpnkn
 Group=moblin2jpnkn
-ExecStart=/usr/bin/moblin2jpnkn /etc/moblin2jpnkn/config
+ExecStart=/usr/bin/moblin2jpnkn -c /etc/moblin2jpnkn/config
 Restart=on-failure
 RestartSec=5
 
