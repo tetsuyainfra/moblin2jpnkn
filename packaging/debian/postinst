@@ -11,7 +11,7 @@ if ! getent passwd moblin2jpnkn >/dev/null; then
 fi
 
 install -d -o root -g moblin2jpnkn -m 0755 /etc/moblin2jpnkn
-# chown root:moblin2jpnkn /etc/moblin2jpnkn/config
+chown root:moblin2jpnkn /etc/moblin2jpnkn/config
 # chmod 0640 /etc/moblin2jpnkn/config
 
 #DEBHELPER#
